@@ -3,6 +3,7 @@ package com.example.kisanbandhuai_basedcroprecommendationanddecisionsupportmobil
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -10,12 +11,11 @@ import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthProvider
 
-class OTPVerificationActivity : AppCompatActivity() {
+class OTPVerificationActivity : BaseActivity() {
 
     private lateinit var auth: FirebaseAuth
     private var verificationId: String? = null
     private var phoneNumber: String? = null
-    private var isBypassMode: Boolean = false
     
     private val otpTextViews = arrayOfNulls<TextView>(6)
     private var currentOtp = ""
@@ -27,7 +27,6 @@ class OTPVerificationActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         verificationId = intent.getStringExtra("verificationId")
         phoneNumber = intent.getStringExtra("phone")
-        isBypassMode = intent.getBooleanExtra("bypass", false)
 
         findViewById<TextView>(R.id.tv_display_mobile).text = "+91 $phoneNumber"
 
@@ -43,20 +42,14 @@ class OTPVerificationActivity : AppCompatActivity() {
         startResendTimer()
 
         findViewById<MaterialButton>(R.id.btn_verify).setOnClickListener {
-            if (isBypassMode) {
-                // Bypass mode enabled: Proceed directly to next screen
-                startActivity(Intent(this, ProfileSetupActivity::class.java))
-                finish()
+            if (currentOtp.length == 6) {
+                verifyCode(currentOtp)
             } else {
-                if (currentOtp.length == 6) {
-                    verifyCode(currentOtp)
-                } else {
-                    Toast.makeText(this, "Enter 6-digit OTP", Toast.LENGTH_SHORT).show()
-                }
+                Toast.makeText(this, "Enter 6-digit OTP", Toast.LENGTH_SHORT).show()
             }
         }
 
-        findViewById<android.view.View>(R.id.btn_back).setOnClickListener {
+        findViewById<View>(R.id.btn_back).setOnClickListener {
             finish()
         }
     }
@@ -90,7 +83,7 @@ class OTPVerificationActivity : AppCompatActivity() {
         for (i in 0 until 6) {
             if (i < currentOtp.length) {
                 otpTextViews[i]?.text = currentOtp[i].toString()
-                otpTextViews[i]?.setBackgroundResource(R.drawable.option_item_selector) // Highlight active box
+                otpTextViews[i]?.setBackgroundResource(R.drawable.option_item_selector)
             } else {
                 otpTextViews[i]?.text = ""
                 otpTextViews[i]?.setBackgroundResource(R.drawable.input_field_bg)
@@ -108,29 +101,36 @@ class OTPVerificationActivity : AppCompatActivity() {
     }
 
     private fun signInWithPhoneAuthCredential(credential: com.google.firebase.auth.PhoneAuthCredential) {
-        findViewById<MaterialButton>(R.id.btn_verify).text = "Verifying..."
+        val btnVerify = findViewById<MaterialButton>(R.id.btn_verify)
+        btnVerify.text = "Verifying..."
+        btnVerify.isEnabled = false
+        
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     startActivity(Intent(this, ProfileSetupActivity::class.java))
                     finish()
                 } else {
-                    findViewById<MaterialButton>(R.id.btn_verify).text = "VERIFY / सत्यापित करें"
-                    Toast.makeText(this, "Invalid OTP. Please try again.", Toast.LENGTH_SHORT).show()
+                    btnVerify.text = "VERIFY"
+                    btnVerify.isEnabled = true
+                    Toast.makeText(this, "Invalid OTP: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
     private fun startResendTimer() {
+        val tvResend = findViewById<TextView>(R.id.tv_resend)
         object : CountDownTimer(30000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                findViewById<TextView>(R.id.tv_resend).text = "Resend code in ${millisUntilFinished / 1000}s"
+                tvResend.text = "Resend code in ${millisUntilFinished / 1000}s"
+                tvResend.isEnabled = false
             }
 
             override fun onFinish() {
-                findViewById<TextView>(R.id.tv_resend).text = "Resend OTP"
-                findViewById<TextView>(R.id.tv_resend).setOnClickListener {
-                    // Logic to resend OTP could be added here
+                tvResend.text = "Resend OTP"
+                tvResend.isEnabled = true
+                tvResend.setOnClickListener {
+                    // Note: You would call verifyPhoneNumber again here to actually resend
                     Toast.makeText(this@OTPVerificationActivity, "Resending OTP...", Toast.LENGTH_SHORT).show()
                 }
             }

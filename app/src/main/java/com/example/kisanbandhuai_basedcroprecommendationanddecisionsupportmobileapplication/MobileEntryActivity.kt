@@ -57,6 +57,7 @@ class MobileEntryActivity : BaseActivity() {
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onVerificationCompleted(credential: com.google.firebase.auth.PhoneAuthCredential) {
+            // Auto-retrieval or instant verification
             signInWithPhoneAuthCredential(credential)
         }
 
@@ -64,18 +65,14 @@ class MobileEntryActivity : BaseActivity() {
             btnSendOtp.isEnabled = true
             btnSendOtp.text = getString(R.string.send_otp)
             
-            Toast.makeText(this@MobileEntryActivity, "Bypassing SMS for testing...", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this@MobileEntryActivity, OTPVerificationActivity::class.java)
-            intent.putExtra("phone", etMobile.text.toString())
-            intent.putExtra("bypass", true)
-            startActivity(intent)
+            // Show actual error to help debugging (e.g., missing SHA keys or disabled provider)
+            Toast.makeText(this@MobileEntryActivity, "Verification Failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
 
         override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
             val intent = Intent(this@MobileEntryActivity, OTPVerificationActivity::class.java)
             intent.putExtra("verificationId", verificationId)
             intent.putExtra("phone", etMobile.text.toString())
-            intent.putExtra("bypass", false)
             startActivity(intent)
         }
     }
@@ -87,7 +84,7 @@ class MobileEntryActivity : BaseActivity() {
                     startActivity(Intent(this, ProfileSetupActivity::class.java))
                     finish()
                 } else {
-                    Toast.makeText(this, "Sign-in failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Sign-in failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }

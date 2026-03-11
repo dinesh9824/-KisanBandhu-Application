@@ -83,9 +83,6 @@ class CropRecommendationViewModel(application: Application) : AndroidViewModel(a
 
                 val results = session.run(mapOf(inputName to inputTensor))
                 
-                // results[0] -> Label array (e.g., ["jute"])
-                // results[1] -> Probability map/array
-                
                 val predictedLabelOutput = results[0].value
                 val probabilitiesOutput = results[1].value
                 

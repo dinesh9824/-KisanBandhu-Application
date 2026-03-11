@@ -46,11 +46,11 @@ abstract class SwipeableActivity : BaseActivity() {
         })
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event != null) {
-            gestureDetector.onTouchEvent(event)
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (ev != null) {
+            gestureDetector.onTouchEvent(ev)
         }
-        return super.onTouchEvent(event)
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun onSwipeLeft() {
