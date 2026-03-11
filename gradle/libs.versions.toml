@@ -21,7 +21,7 @@ googleid = "1.2.0"
 firebaseDatabase = "21.0.0"
 firebaseFirestore = "25.1.2"
 firebaseStorage = "21.0.1"
-onnxruntime = "1.18.0"
+onnxruntime = "1.24.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

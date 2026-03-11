@@ -19,9 +19,6 @@ import java.nio.DoubleBuffer
 
 class CropRecommendationViewModel(application: Application) : AndroidViewModel(application) {
 
-    // === CONFIGURATION CHECKPOINT ===
-    // Set this to TRUE to use the Offline ONNX model.
-    // Set this to FALSE to use the Cloud API via Retrofit/Render.
     private val useOfflineModel = true 
 
     private val _predictionResult = MutableLiveData<CropResponse?>()
@@ -33,9 +30,15 @@ class CropRecommendationViewModel(application: Application) : AndroidViewModel(a
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val cropLabels = listOf(
+        "rice", "maize", "chickpea", "kidneybeans", "pigeonpeas",
+        "mothbeans", "mungbean", "blackgram", "lentil", "pomegranate",
+        "banana", "mango", "grapes", "watermelon", "muskmelon",
+        "apple", "orange", "papaya", "coconut", "cotton", "jute", "coffee"
+    )
+
     fun predictCrop(request: CropRequest) {
         _isLoading.value = true
-
         if (useOfflineModel) {
             predictCropOffline(request)
         } else {
@@ -53,7 +56,6 @@ class CropRecommendationViewModel(application: Application) : AndroidViewModel(a
                     _error.value = "Server Error: ${response.code()}"
                 }
             }
-
             override fun onFailure(call: Call<CropResponse>, t: Throwable) {
                 _isLoading.value = false
                 _error.value = "Connection Failed: ${t.message}"
@@ -70,65 +72,63 @@ class CropRecommendationViewModel(application: Application) : AndroidViewModel(a
                 val session = env.createSession(modelBytes)
 
                 val inputName = session.inputNames.iterator().next()
-                val inputInfo = session.inputInfo[inputName]?.info
                 
-                Log.d("ONNX_DEBUG", "Model expects input: $inputName")
-                Log.d("ONNX_DEBUG", "Model input info: $inputInfo")
-
-                // Convert input to Double array (Most common cause of INVALID_ARGUMENT is Float vs Double)
-                val doubleArray = doubleArrayOf(
-                    request.N.toDouble(), request.P.toDouble(), request.K.toDouble(),
-                    request.temperature.toDouble(), request.humidity.toDouble(), request.ph.toDouble(), request.rainfall.toDouble()
-                )
-                
-                // Also create float fallback
+                // Prepare input data
                 val floatArray = floatArrayOf(
                     request.N, request.P, request.K,
                     request.temperature, request.humidity, request.ph, request.rainfall
                 )
-
-                // Check the expected type from the model
-                val isDouble = inputInfo.toString().contains("DOUBLE")
                 
-                val inputTensor = if (isDouble) {
-                    val doubleBuffer = DoubleBuffer.wrap(doubleArray)
-                    OnnxTensor.createTensor(env, doubleBuffer, longArrayOf(1, 7))
-                } else {
-                    val floatBuffer = FloatBuffer.wrap(floatArray)
-                    OnnxTensor.createTensor(env, floatBuffer, longArrayOf(1, 7))
-                }
+                val inputTensor = OnnxTensor.createTensor(env, FloatBuffer.wrap(floatArray), longArrayOf(1, 7))
 
                 val results = session.run(mapOf(inputName to inputTensor))
-                val output = results[0].value
                 
-                var predictedCrop = "Unknown"
+                // results[0] -> Label array (e.g., ["jute"])
+                // results[1] -> Probability map/array
                 
-                if (output is Array<*>) {
-                    if (output.isArrayOf<String>()) {
-                        predictedCrop = (output as Array<String>)[0]
-                    } else if (output.isArrayOf<Long>()) {
-                        predictedCrop = "Crop ID: ${(output as Array<Long>)[0]}"
-                    } else {
-                        val firstElem = output[0]
-                        if (firstElem is Array<*>) {
-                            predictedCrop = firstElem[0].toString()
-                        } else {
-                            predictedCrop = output[0].toString()
-                        }
+                val predictedLabelOutput = results[0].value
+                val probabilitiesOutput = results[1].value
+                
+                var top3Predictions = mutableListOf<CropPrediction>()
+                var recommendedCrop = "Unknown"
+
+                // 1. Extract Recommended Crop Name
+                recommendedCrop = when (predictedLabelOutput) {
+                    is Array<*> -> {
+                        val first = predictedLabelOutput[0]
+                        if (first is Array<*>) first[0].toString() else first.toString()
                     }
-                } else if (output is LongArray) {
-                    predictedCrop = "Crop ID: ${output[0]}"
-                } else {
-                    predictedCrop = output.toString().replace(Regex("[\\[\\]]"), "")
+                    is LongArray -> predictedLabelOutput[0].toString()
+                    else -> predictedLabelOutput.toString().replace(Regex("[\\[\\]]"), "")
                 }
-                
+
+                // 2. Extract Probabilities and Calculate Top 3
+                if (probabilitiesOutput is Array<*>) {
+                    val firstRow = probabilitiesOutput[0]
+                    if (firstRow is FloatArray) {
+                        val probs = firstRow
+                        top3Predictions = probs.mapIndexed { index, prob ->
+                            CropPrediction(cropLabels.getOrElse(index) { "Unknown" }, prob)
+                        }.sortedByDescending { it.probability }.take(3).toMutableList()
+                    } else if (firstRow is Map<*, *>) {
+                        @Suppress("UNCHECKED_CAST")
+                        val probMap = firstRow as Map<String, Float>
+                        top3Predictions = probMap.map { CropPrediction(it.key, it.value) }
+                            .sortedByDescending { it.probability }.take(3).toMutableList()
+                    }
+                }
+
                 results.close()
                 inputTensor.close()
                 session.close()
 
                 withContext(Dispatchers.Main) {
                     _isLoading.value = false
-                    _predictionResult.value = CropResponse(success = true, recommended_crop = predictedCrop)
+                    _predictionResult.value = CropResponse(
+                        success = true,
+                        recommended_crop = recommendedCrop,
+                        top_predictions = top3Predictions
+                    )
                 }
 
             } catch (e: Exception) {

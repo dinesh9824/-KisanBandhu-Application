@@ -22,7 +22,6 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.slider.Slider
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -65,8 +64,7 @@ class CropRecommendationActivity : BaseActivity() {
         findViewById<View>(R.id.btn_ph).setOnClickListener { showPHBottomSheet() }
         findViewById<View>(R.id.btn_humidity).setOnClickListener { showHumidityBottomSheet() }
         
-        // The ID btn_edit_history does not exist in the current layout, so this line is commented out.
-        // findViewById<MaterialButton>(R.id.btn_edit_history).setOnClickListener { showEditHistoryDialog() }
+        findViewById<MaterialButton>(R.id.btn_edit_history).setOnClickListener { showEditHistoryDialog() }
 
         setupBottomNavigation()
         observeWeather()
@@ -89,7 +87,6 @@ class CropRecommendationActivity : BaseActivity() {
 
     private fun showEditHistoryDialog() {
         val builder = AlertDialog.Builder(this)
-        // Ensure "edit_history" and "save_value" are defined in your strings.xml
         builder.setTitle(getString(R.string.edit_history))
         val input = EditText(this)
         input.setText(currentCrops)
@@ -108,10 +105,8 @@ class CropRecommendationActivity : BaseActivity() {
         db.collection("users").document(uid)
             .update("currentCrops", newHistory)
             .addOnSuccessListener {
-                Toast.makeText(this, "Crop history updated!", Toast.LENGTH_SHORT).show()
+                // Removed toast for pure UI logic
                 currentCrops = newHistory
-                // The ID tv_last_season_crop does not exist in the current layout, so this line is commented out.
-                // findViewById<TextView>(R.id.tv_last_season_crop).text = newHistory
             }
     }
 
@@ -122,8 +117,6 @@ class CropRecommendationActivity : BaseActivity() {
                 val crops = document.getString("currentCrops")
                 if (!crops.isNullOrEmpty()) {
                     currentCrops = crops
-                    // The ID tv_last_season_crop does not exist in the current layout, so this line is commented out.
-                    // findViewById<TextView>(R.id.tv_last_season_crop).text = crops
                 }
             }
         }
@@ -179,7 +172,11 @@ class CropRecommendationActivity : BaseActivity() {
     }
 
     private fun updateLiveUI() {
-        // The layout XML doesn't contain these IDs, so this will be empty to prevent crashes
+        val tvTemp = findViewById<TextView>(R.id.tv_live_temp)
+        val tvRain = findViewById<TextView>(R.id.tv_live_rainfall)
+        
+        tvTemp?.text = "${temperature.toInt()}°C"
+        tvRain?.text = "${rainfall.toInt()} mm"
     }
 
     private fun showChooseSourceDialog() {
@@ -268,16 +265,16 @@ class CropRecommendationActivity : BaseActivity() {
             tvValue.text = String.format("%.1f", value)
             when {
                 value < 6.0 -> {
-                    tvStatus.text = getString(R.string.ph_status_acidic)
-                    tvStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark))
+                    tvStatus?.text = getString(R.string.ph_status_acidic)
+                    tvStatus?.setTextColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark))
                 }
                 value <= 7.5 -> {
-                    tvStatus.text = getString(R.string.ph_status_neutral)
-                    tvStatus.setTextColor(ContextCompat.getColor(this, R.color.brand_green))
+                    tvStatus?.text = getString(R.string.ph_status_neutral)
+                    tvStatus?.setTextColor(ContextCompat.getColor(this, R.color.brand_green))
                 }
                 else -> {
-                    tvStatus.text = getString(R.string.ph_status_alkaline)
-                    tvStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_purple))
+                    tvStatus?.text = getString(R.string.ph_status_alkaline)
+                    tvStatus?.setTextColor(ContextCompat.getColor(this, android.R.color.holo_purple))
                 }
             }
         }
@@ -301,6 +298,7 @@ class CropRecommendationActivity : BaseActivity() {
         val dialog = BottomSheetDialog(this)
         val view = layoutInflater.inflate(R.layout.activity_moisture_input, null)
         
+        // Use the consistent btn_close ID now
         view.findViewById<View>(R.id.btn_close)?.setOnClickListener { dialog.dismiss() }
         
         val btnUp = view.findViewById<ImageButton>(R.id.btn_moisture_up)
@@ -312,7 +310,7 @@ class CropRecommendationActivity : BaseActivity() {
         val tvStatus = view.findViewById<TextView>(R.id.tv_moisture_status)
 
         slider.value = humidity.toFloat()
-        etHum.setText(humidity.toInt().toString())
+        etHum?.setText(humidity.toInt().toString())
         
         var isUpdating = false
 
@@ -321,20 +319,20 @@ class CropRecommendationActivity : BaseActivity() {
             
             tvValue.text = "${value.toInt()}%"
             if (updateSlider) slider.value = value
-            if (updateEditText) etHum.setText(value.toInt().toString())
+            if (updateEditText) etHum?.setText(value.toInt().toString())
             
             when {
                 value < 30 -> {
-                    tvStatus.text = getString(R.string.moisture_dry)
-                    tvStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark))
+                    tvStatus?.text = getString(R.string.moisture_dry)
+                    tvStatus?.setTextColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark))
                 }
                 value <= 60 -> {
-                    tvStatus.text = getString(R.string.moisture_good)
-                    tvStatus.setTextColor(ContextCompat.getColor(this, R.color.brand_green))
+                    tvStatus?.text = getString(R.string.moisture_good)
+                    tvStatus?.setTextColor(ContextCompat.getColor(this, R.color.brand_green))
                 }
                 else -> {
-                    tvStatus.text = getString(R.string.moisture_wet)
-                    tvStatus.setTextColor(ContextCompat.getColor(this, android.R.color.holo_blue_dark))
+                    tvStatus?.text = getString(R.string.moisture_wet)
+                    tvStatus?.setTextColor(ContextCompat.getColor(this, android.R.color.holo_blue_dark))
                 }
             }
             
@@ -343,13 +341,13 @@ class CropRecommendationActivity : BaseActivity() {
         
         updateMoistureUI(humidity.toFloat(), updateSlider = false, updateEditText = false)
         
-        btnUp.setOnClickListener {
-            val currentVal = etHum.text.toString().toFloatOrNull() ?: 0f
+        btnUp?.setOnClickListener {
+            val currentVal = etHum?.text.toString().toFloatOrNull() ?: 0f
             if(currentVal < 100) updateMoistureUI(currentVal + 1, true, true)
         }
         
-        btnDown.setOnClickListener {
-            val currentVal = etHum.text.toString().toFloatOrNull() ?: 0f
+        btnDown?.setOnClickListener {
+            val currentVal = etHum?.text.toString().toFloatOrNull() ?: 0f
             if(currentVal > 0) updateMoistureUI(currentVal - 1, true, true)
         }
 
@@ -359,7 +357,7 @@ class CropRecommendationActivity : BaseActivity() {
             }
         }
         
-        etHum.addTextChangedListener(object : TextWatcher {
+        etHum?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (!isUpdating) {
                     val value = s?.toString()?.toFloatOrNull()
@@ -373,7 +371,8 @@ class CropRecommendationActivity : BaseActivity() {
         })
 
         view.findViewById<View>(R.id.btn_save).setOnClickListener {
-            humidity = etHum.text.toString().toDoubleOrNull() ?: humidity
+            val humVal = etHum?.text.toString().toDoubleOrNull() ?: humidity
+            humidity = humVal
             findViewById<TextView>(R.id.tv_humidity_summary)?.text = "${humidity.toInt()} %"
             dialog.dismiss()
         }

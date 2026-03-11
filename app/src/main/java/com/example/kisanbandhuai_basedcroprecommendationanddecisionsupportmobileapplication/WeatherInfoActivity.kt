@@ -20,7 +20,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
-class WeatherInfoActivity : AppCompatActivity() {
+class WeatherInfoActivity : SwipeableActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val viewModel: WeatherViewModel by viewModels()

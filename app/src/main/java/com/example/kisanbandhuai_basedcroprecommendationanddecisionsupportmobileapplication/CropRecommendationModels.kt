@@ -10,7 +10,13 @@ data class CropRequest(
     val rainfall: Float
 )
 
+data class CropPrediction(
+    val cropName: String,
+    val probability: Float
+)
+
 data class CropResponse(
     val success: Boolean,
-    val recommended_crop: String
+    val recommended_crop: String,
+    val top_predictions: List<CropPrediction> = emptyList()
 )

@@ -7,11 +7,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 
-class RecommendationResultActivity : AppCompatActivity() {
+class RecommendationResultActivity : BaseActivity() {
 
     private lateinit var viewModel: CropRecommendationViewModel
 
@@ -61,11 +62,46 @@ class RecommendationResultActivity : AppCompatActivity() {
 
         viewModel.predictionResult.observe(this) { response ->
             if (response != null && response.success) {
-                val cropName = response.recommended_crop
-                findViewById<TextView>(R.id.tv_recommended_crop)?.text = cropName
-                findViewById<TextView>(R.id.tv_suitability_text)?.text = "Best suited for your conditions"
+                // Handle Top 3 Predictions
+                val predictions = response.top_predictions
                 
-                updateCropIcon(cropName)
+                if (predictions.isNotEmpty()) {
+                    // Prediction 1 (Main)
+                    val p1 = predictions[0]
+                    findViewById<TextView>(R.id.tv_crop_1)?.text = getLocalizedCropName(p1.cropName)
+                    findViewById<TextView>(R.id.tv_prob_1)?.text = "${(p1.probability * 100).toInt()}%"
+                    updateCropIcon(p1.cropName, findViewById(R.id.crop_icon_1))
+                    
+                    // Prediction 2
+                    if (predictions.size > 1) {
+                        val p2 = predictions[1]
+                        val tvCrop2 = findViewById<TextView>(R.id.tv_crop_2)
+                        val tvProb2 = findViewById<TextView>(R.id.tv_prob_2)
+                        
+                        tvCrop2?.text = getLocalizedCropName(p2.cropName)
+                        tvProb2?.text = "${(p2.probability * 100).toInt()}%"
+                        // Set suitable color for 2nd rank (Blue)
+                        tvProb2?.setTextColor(ContextCompat.getColor(this, R.color.button_blue))
+                    }
+                    
+                    // Prediction 3
+                    if (predictions.size > 2) {
+                        val p3 = predictions[2]
+                        val tvCrop3 = findViewById<TextView>(R.id.tv_crop_3)
+                        val tvProb3 = findViewById<TextView>(R.id.tv_prob_3)
+                        
+                        tvCrop3?.text = getLocalizedCropName(p3.cropName)
+                        tvProb3?.text = "${(p3.probability * 100).toInt()}%"
+                        // Set suitable color for 3rd rank (Secondary Gray)
+                        tvProb3?.setTextColor(ContextCompat.getColor(this, R.color.button_red))
+                    }
+                } else {
+                    // Fallback for single result mode
+                    val rawCropName = response.recommended_crop
+                    findViewById<TextView>(R.id.tv_crop_1)?.text = getLocalizedCropName(rawCropName)
+                    findViewById<TextView>(R.id.tv_prob_1)?.text = "100%"
+                    updateCropIcon(rawCropName, findViewById(R.id.crop_icon_1))
+                }
             }
         }
 
@@ -79,6 +115,17 @@ class RecommendationResultActivity : AppCompatActivity() {
         }
     }
 
+    private fun getLocalizedCropName(crop: String): String {
+        val resName = "crop_" + crop.lowercase().replace(" ", "")
+        val resId = resources.getIdentifier(resName, "string", packageName)
+        
+        return if (resId != 0) {
+            getString(resId)
+        } else {
+            crop.replaceFirstChar { it.uppercase() }
+        }
+    }
+
     private fun updateInputUI(n: Int, p: Int, k: Int, ph: Double, t: Double, h: Double, r: Double) {
         findViewById<TextView>(R.id.tv_param_n)?.text = "$n kg/ha"
         findViewById<TextView>(R.id.tv_param_p)?.text = "$p kg/ha"
@@ -89,13 +136,12 @@ class RecommendationResultActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_param_rainfall)?.text = "${r.toInt()} mm"
     }
 
-    private fun updateCropIcon(crop: String) {
-        val iconView = findViewById<ImageView>(R.id.crop_icon)
+    private fun updateCropIcon(crop: String, iconView: ImageView?) {
+        if (iconView == null) return
         when (crop.lowercase()) {
-            "rice" -> iconView?.setImageResource(R.drawable.ic_leaf)
-            "cotton" -> iconView?.setImageResource(R.drawable.ic_cotton)
-            "pulses" -> iconView?.setImageResource(R.drawable.ic_pulses)
-            else -> iconView?.setImageResource(R.drawable.ic_leaf)
+            "rice" -> iconView.setImageResource(R.drawable.ic_leaf)
+            "cotton" -> iconView.setImageResource(R.drawable.ic_sprout_logo)
+            else -> iconView.setImageResource(R.drawable.ic_leaf)
         }
     }
 

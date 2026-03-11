@@ -154,7 +154,7 @@
                     android:textColor="@color/text_secondary" />
             </LinearLayout>
 
-            <!-- Recommended Crop Card -->
+            <!-- Top Predictions Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_result"
                 android:layout_width="match_parent"
@@ -189,18 +189,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="@string/recommended_crop"
+                            android:text="@string/top_match"
                             android:textColor="@color/black"
                             android:textStyle="bold" />
                     </LinearLayout>
 
+                    <!-- Row 1 (Top Prediction) -->
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp">
 
                         <ImageView
-                            android:id="@+id/crop_icon"
+                            android:id="@+id/crop_icon_1"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
                             android:src="@drawable/ic_leaf" />
@@ -210,20 +211,20 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="16dp"
-                            android:layout_toEndOf="@id/crop_icon"
+                            android:layout_toEndOf="@id/crop_icon_1"
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tv_recommended_crop"
+                                android:id="@+id/tv_crop_1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/calculating"
                                 android:textColor="@color/brand_green_dark"
-                                android:textSize="24sp"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
 
                             <TextView
-                                android:id="@+id/tv_suitability_text"
+                                android:id="@+id/tv_suitability_1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/best_suited"
@@ -232,6 +233,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tv_prob_1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
@@ -239,11 +241,68 @@
                             android:background="@drawable/bg_square_badge"
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="4dp"
-                            android:text="@string/top_match"
+                            android:text="0%"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="16dp" android:background="#F5F5F5" />
+
+                    <!-- Row 2 -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp">
+
+                        <TextView
+                            android:id="@+id/tv_crop_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="--"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_prob_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:text="0%"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="12dp" android:background="#F5F5F5" />
+
+                    <!-- Row 3 -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp">
+
+                        <TextView
+                            android:id="@+id/tv_crop_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="--"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_prob_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:text="0%"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

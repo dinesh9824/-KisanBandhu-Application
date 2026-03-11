@@ -305,6 +305,7 @@
                             android:layout_marginTop="16dp"
                             android:backgroundTint="#5D4037"
                             android:text="@string/edit_history"
+                            android:id="@+id/btn_edit_history"
                             app:cornerRadius="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>

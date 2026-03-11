@@ -117,6 +117,7 @@
     
     <string name="save_values">मान सहेजें</string>
     <string name="save_value">मान सहेजें</string>
+    <string name="save">सहेजें</string>
     <string name="enter_manually">मैन्युअल रूप से दर्ज करें</string>
 
     <string name="recommendation_ready">सिफारिश तैयार है!</string>
@@ -125,6 +126,7 @@
     <string name="best_suited">आपकी स्थितियों के लिए सबसे उपयुक्त</string>
     <string name="your_input_params">आपके इनपुट पैरामीटर</string>
     <string name="prev_crop_history">3. पिछला फसल इतिहास</string>
+    <string name="last_season_prefix">पिछला सीजन:</string>
     <string name="last_season">पिछला सीजन: कपास</string>
     <string name="target_season">लक्ष्य: रबी सीजन (अक्टूबर - मार्च)</string>
     <string name="edit_history">इतिहास संपादित करें</string>
@@ -132,4 +134,28 @@
     <string name="calculating">गणना की जा रही है...</string>
     <string name="feeding_ai_model">AI मॉडल को डेटा दिया जा रहा है...</string>
     <string name="back_to_input">इनपुट पर वापस जाएं</string>
+
+    <!-- Crop Translation List -->
+    <string name="crop_rice">चावल</string>
+    <string name="crop_maize">मक्का</string>
+    <string name="crop_chickpea">चना</string>
+    <string name="crop_kidneybeans">राजमा</string>
+    <string name="crop_pigeonpeas">अरहर</string>
+    <string name="crop_mothbeans">मोठ</string>
+    <string name="crop_mungbean">मूंग</string>
+    <string name="crop_blackgram">उड़द</string>
+    <string name="crop_lentil">मसूर</string>
+    <string name="crop_pomegranate">अनार</string>
+    <string name="crop_banana">केला</string>
+    <string name="crop_mango">आम</string>
+    <string name="crop_grapes">अंगूर</string>
+    <string name="crop_watermelon">तरबूज</string>
+    <string name="crop_muskmelon">खरबूजा</string>
+    <string name="crop_apple">सेब</string>
+    <string name="crop_orange">संतरा</string>
+    <string name="crop_papaya">पपीता</string>
+    <string name="crop_coconut">नारियल</string>
+    <string name="crop_cotton">कपास</string>
+    <string name="crop_jute">जूट</string>
+    <string name="crop_coffee">कॉफ़ी</string>
 </resources>

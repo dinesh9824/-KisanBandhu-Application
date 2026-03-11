@@ -124,6 +124,7 @@
     <string name="best_suited">Best suited for your conditions</string>
     <string name="your_input_params">Your Input Parameters</string>
     <string name="prev_crop_history">3. Previous Crop History</string>
+    <string name="last_season_prefix">Last Season:</string>
     <string name="last_season">Last Season: Cotton</string>
     <string name="target_season">Target: Rabi Season (Oct - Mar)</string>
     <string name="edit_history">EDIT HISTORY</string>
@@ -131,4 +132,28 @@
     <string name="calculating">Calculating...</string>
     <string name="feeding_ai_model">Feeding data to AI model...</string>
     <string name="back_to_input">Back to Input</string>
+
+    <!-- Crop Translation List -->
+    <string name="crop_rice">Rice</string>
+    <string name="crop_maize">Maize</string>
+    <string name="crop_chickpea">Chickpea</string>
+    <string name="crop_kidneybeans">Kidney Beans</string>
+    <string name="crop_pigeonpeas">Pigeon Peas</string>
+    <string name="crop_mothbeans">Moth Beans</string>
+    <string name="crop_mungbean">Mung Bean</string>
+    <string name="crop_blackgram">Black Gram</string>
+    <string name="crop_lentil">Lentil</string>
+    <string name="crop_pomegranate">Pomegranate</string>
+    <string name="crop_banana">Banana</string>
+    <string name="crop_mango">Mango</string>
+    <string name="crop_grapes">Grapes</string>
+    <string name="crop_watermelon">Watermelon</string>
+    <string name="crop_muskmelon">Muskmelon</string>
+    <string name="crop_apple">Apple</string>
+    <string name="crop_orange">Orange</string>
+    <string name="crop_papaya">Papaya</string>
+    <string name="crop_coconut">Coconut</string>
+    <string name="crop_cotton">Cotton</string>
+    <string name="crop_jute">Jute</string>
+    <string name="crop_coffee">Coffee</string>
 </resources>

@@ -316,28 +316,28 @@
                     android:background="?attr/selectableItemBackground">
                     <ImageView android:id="@+id/ic_edit_icon" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_edit" app:tint="@color/text_secondary" android:contentDescription="Edit Profile Menu" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toEndOf="@id/ic_edit_icon" android:layout_marginStart="16dp" android:text="@string/edit_profile" android:textColor="@color/black" android:textStyle="bold" />
-                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_alignParentEnd="true" android:src="@drawable/ic_check_circle" android:rotation="180" app:tint="#E0E0E0" android:contentDescription="Go" />
+                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:src="@drawable/ic_chevron_right" app:tint="#9E9E9E" android:contentDescription="Go" />
                 </RelativeLayout>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F5F5F5" />
 
                 <RelativeLayout android:id="@+id/btn_menu_crop_history" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackground">
                     <ImageView android:id="@+id/ic_history_icon" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_leaf" app:tint="@color/brand_green" android:contentDescription="Crop History Menu" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toEndOf="@id/ic_history_icon" android:layout_marginStart="16dp" android:text="@string/my_crop_history" android:textColor="@color/black" android:textStyle="bold" />
-                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_alignParentEnd="true" android:src="@drawable/ic_check_circle" android:rotation="180" app:tint="#E0E0E0" android:contentDescription="Go" />
+                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:src="@drawable/ic_chevron_right" app:tint="#9E9E9E" android:contentDescription="Go" />
                 </RelativeLayout>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F5F5F5" />
 
                 <RelativeLayout android:id="@+id/btn_menu_settings" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackground">
                     <ImageView android:id="@+id/ic_settings_gear_icon" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_settings_gear" app:tint="@color/text_secondary" android:contentDescription="Settings Menu" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toEndOf="@id/ic_settings_gear_icon" android:layout_marginStart="16dp" android:text="@string/settings" android:textColor="@color/black" android:textStyle="bold" />
-                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_alignParentEnd="true" android:src="@drawable/ic_check_circle" android:rotation="180" app:tint="#E0E0E0" android:contentDescription="Go" />
+                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:src="@drawable/ic_chevron_right" app:tint="#9E9E9E" android:contentDescription="Go" />
                 </RelativeLayout>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F5F5F5" />
 
                 <RelativeLayout android:id="@+id/btn_menu_help" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:clickable="true" android:focusable="true" android:background="?attr/selectableItemBackground">
                     <ImageView android:id="@+id/ic_help_icon" android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_help" app:tint="@color/text_secondary" android:contentDescription="Help Menu" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toEndOf="@id/ic_help_icon" android:layout_marginStart="16dp" android:text="@string/help_support" android:textColor="@color/black" android:textStyle="bold" />
-                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_alignParentEnd="true" android:src="@drawable/ic_check_circle" android:rotation="180" app:tint="#E0E0E0" android:contentDescription="Go" />
+                    <ImageView android:layout_width="16dp" android:layout_height="16dp" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:src="@drawable/ic_chevron_right" app:tint="#9E9E9E" android:contentDescription="Go" />
                 </RelativeLayout>
             </LinearLayout>
 
