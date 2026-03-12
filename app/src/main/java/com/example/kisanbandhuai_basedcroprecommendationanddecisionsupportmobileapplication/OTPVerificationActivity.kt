@@ -1,12 +1,16 @@
 package com.example.kisanbandhuai_basedcroprecommendationanddecisionsupportmobileapplication
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthProvider
@@ -19,6 +23,7 @@ class OTPVerificationActivity : BaseActivity() {
     
     private val otpTextViews = arrayOfNulls<TextView>(6)
     private var currentOtp = ""
+    private lateinit var btnVerify: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +32,7 @@ class OTPVerificationActivity : BaseActivity() {
         auth = FirebaseAuth.getInstance()
         verificationId = intent.getStringExtra("verificationId")
         phoneNumber = intent.getStringExtra("phone")
+        btnVerify = findViewById(R.id.btn_verify)
 
         findViewById<TextView>(R.id.tv_display_mobile).text = "+91 $phoneNumber"
 
@@ -41,9 +47,15 @@ class OTPVerificationActivity : BaseActivity() {
         setupNumpad()
         startResendTimer()
 
-        findViewById<MaterialButton>(R.id.btn_verify).setOnClickListener {
+        btnVerify.setOnClickListener {
             if (currentOtp.length == 6) {
-                verifyCode(currentOtp)
+                if (verificationId == "MOCK_VERIFICATION_ID") {
+                    Log.d("OTP_DEBUG", "Bypassing Firebase check for mock ID. Navigating to Profile Setup.")
+                    startActivity(Intent(this, ProfileSetupActivity::class.java))
+                    finish()
+                } else {
+                    verifyCode(currentOtp)
+                }
             } else {
                 Toast.makeText(this, "Enter 6-digit OTP", Toast.LENGTH_SHORT).show()
             }
@@ -67,6 +79,7 @@ class OTPVerificationActivity : BaseActivity() {
                 if (currentOtp.length < 6) {
                     currentOtp += value
                     updateOtpDisplay()
+                    updateButtonStyle(currentOtp.length)
                 }
             }
         }
@@ -75,8 +88,12 @@ class OTPVerificationActivity : BaseActivity() {
             if (currentOtp.isNotEmpty()) {
                 currentOtp = currentOtp.substring(0, currentOtp.length - 1)
                 updateOtpDisplay()
+                updateButtonStyle(currentOtp.length)
             }
         }
+        
+        // Initial state
+        updateButtonStyle(0)
     }
 
     private fun updateOtpDisplay() {
@@ -91,6 +108,17 @@ class OTPVerificationActivity : BaseActivity() {
         }
     }
 
+    private fun updateButtonStyle(length: Int) {
+        if (length == 6) {
+            btnVerify.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
+            btnVerify.setTextColor(ContextCompat.getColor(this, R.color.brand_green_dark))
+        } else {
+            // Semi-transparent or lighter green to show "inactive" state
+            btnVerify.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#81C784"))
+            btnVerify.setTextColor(ContextCompat.getColor(this, R.color.brand_green_dark))
+        }
+    }
+
     private fun verifyCode(code: String) {
         if (verificationId == null) {
             Toast.makeText(this, "Verification error. Please try again.", Toast.LENGTH_SHORT).show()
@@ -101,7 +129,6 @@ class OTPVerificationActivity : BaseActivity() {
     }
 
     private fun signInWithPhoneAuthCredential(credential: com.google.firebase.auth.PhoneAuthCredential) {
-        val btnVerify = findViewById<MaterialButton>(R.id.btn_verify)
         btnVerify.text = "Verifying..."
         btnVerify.isEnabled = false
         
@@ -113,6 +140,7 @@ class OTPVerificationActivity : BaseActivity() {
                 } else {
                     btnVerify.text = "VERIFY"
                     btnVerify.isEnabled = true
+                    updateButtonStyle(currentOtp.length)
                     Toast.makeText(this, "Invalid OTP: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -130,7 +158,6 @@ class OTPVerificationActivity : BaseActivity() {
                 tvResend.text = "Resend OTP"
                 tvResend.isEnabled = true
                 tvResend.setOnClickListener {
-                    // Note: You would call verifyPhoneNumber again here to actually resend
                     Toast.makeText(this@OTPVerificationActivity, "Resending OTP...", Toast.LENGTH_SHORT).show()
                 }
             }

@@ -2,10 +2,7 @@ package com.example.kisanbandhuai_basedcroprecommendationanddecisionsupportmobil
 
 import okhttp3.MultipartBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
+import retrofit2.http.*
 
 interface ApiService {
     @POST("/predict")
@@ -16,4 +13,13 @@ interface ApiService {
     fun predictDisease(
         @Part image: MultipartBody.Part
     ): Call<DiseaseResponse>
+
+    @GET("resource/9ef84268-d588-465a-a308-a864a43d0070")
+    fun getMarketPrices(
+        @Query("api-key") apiKey: String,
+        @Query("format") format: String = "json",
+        @Query("limit") limit: Int = 10,
+        @Query("filters[state]") state: String? = null,
+        @Query("filters[commodity]") commodity: String? = null
+    ): Call<MarketResponse>
 }
