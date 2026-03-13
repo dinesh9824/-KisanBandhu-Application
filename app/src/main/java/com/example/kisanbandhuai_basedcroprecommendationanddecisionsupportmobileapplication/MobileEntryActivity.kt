@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -22,9 +21,6 @@ class MobileEntryActivity : BaseActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var btnSendOtp: MaterialButton
     
-    // DEBUG BYPASS: Set this to your test phone number
-    private val BYPASS_NUMBER = "9876543210" 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mobile_entry)
@@ -34,19 +30,12 @@ class MobileEntryActivity : BaseActivity() {
         btnSendOtp = findViewById(R.id.btn_send_otp)
         
         setupNumpad()
+        updateButtonStyle(0)
 
         btnSendOtp.setOnClickListener {
             val phoneNumber = etMobile.text.toString()
             if (phoneNumber.length == 10) {
-                if (phoneNumber == BYPASS_NUMBER) {
-                    Log.d("OTP_DEBUG", "Bypass number detected. Navigating to OTP screen without Firebase request.")
-                    val intent = Intent(this, OTPVerificationActivity::class.java)
-                    intent.putExtra("verificationId", "MOCK_VERIFICATION_ID")
-                    intent.putExtra("phone", phoneNumber)
-                    startActivity(intent)
-                } else {
-                    sendVerificationCode("+91$phoneNumber")
-                }
+                sendVerificationCode("+91$phoneNumber")
             } else {
                 Toast.makeText(this, "Please enter a valid 10-digit number", Toast.LENGTH_SHORT).show()
             }
@@ -57,8 +46,18 @@ class MobileEntryActivity : BaseActivity() {
         }
     }
 
+    private fun updateButtonStyle(length: Int) {
+        if (length == 10) {
+            btnSendOtp.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
+            btnSendOtp.setTextColor(ContextCompat.getColor(this, R.color.brand_green_dark))
+        } else {
+            // Semi-transparent/dimmed green when inactive
+            btnSendOtp.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#81C784"))
+            btnSendOtp.setTextColor(ContextCompat.getColor(this, R.color.brand_green_dark))
+        }
+    }
+
     private fun sendVerificationCode(number: String) {
-        Log.d("OTP_DEBUG", "Initiating verification for: $number")
         btnSendOtp.isEnabled = false
         btnSendOtp.text = "Sending..."
 
@@ -73,35 +72,17 @@ class MobileEntryActivity : BaseActivity() {
 
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onVerificationCompleted(credential: com.google.firebase.auth.PhoneAuthCredential) {
-            Log.d("OTP_DEBUG", "onVerificationCompleted: Instant verification")
             signInWithPhoneAuthCredential(credential)
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
             btnSendOtp.isEnabled = true
-            btnSendOtp.text = "SEND OTP"
+            btnSendOtp.text = getString(R.string.send_otp)
             updateButtonStyle(etMobile.text.length)
-            Log.e("OTP_DEBUG", "Verification Failed: ${e.message}")
-            
-            if (e.message?.contains("BILLING_NOT_ENABLED") == true) {
-                Toast.makeText(this@MobileEntryActivity, 
-                    "SMS failed. Use test number $BYPASS_NUMBER to bypass billing check.", 
-                    Toast.LENGTH_LONG).show()
-            } else if (e.message?.contains("unusual activity") == true) {
-                Toast.makeText(this@MobileEntryActivity, 
-                    "Blocked due to unusual activity. Use test number $BYPASS_NUMBER to bypass.", 
-                    Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(this@MobileEntryActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
-            }
+            Toast.makeText(this@MobileEntryActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
         }
 
         override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-            Log.d("OTP_DEBUG", "onCodeSent: Code successfully requested. ID: $verificationId")
-            btnSendOtp.isEnabled = true
-            btnSendOtp.text = "SEND OTP"
-            updateButtonStyle(etMobile.text.length)
-            
             val intent = Intent(this@MobileEntryActivity, OTPVerificationActivity::class.java)
             intent.putExtra("verificationId", verificationId)
             intent.putExtra("phone", etMobile.text.toString())
@@ -113,13 +94,24 @@ class MobileEntryActivity : BaseActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d("OTP_DEBUG", "Sign in successful")
-                    startActivity(Intent(this, ProfileSetupActivity::class.java))
-                    finish()
+                    checkProfileAndNavigate()
                 } else {
-                    Log.e("OTP_DEBUG", "Sign in failed: ${task.exception?.message}")
                     Toast.makeText(this, "Sign-in failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
+            }
+    }
+
+    private fun checkProfileAndNavigate() {
+        val uid = auth.currentUser?.uid ?: return
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            .collection("users").document(uid).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    startActivity(Intent(this, MainActivity::class.java))
+                } else {
+                    startActivity(Intent(this, ProfileSetupActivity::class.java))
+                }
+                finish()
             }
     }
 
@@ -146,20 +138,6 @@ class MobileEntryActivity : BaseActivity() {
                 etMobile.setText(text.substring(0, text.length - 1))
                 updateButtonStyle(etMobile.text.length)
             }
-        }
-        
-        // Initialize state
-        updateButtonStyle(0)
-    }
-
-    private fun updateButtonStyle(length: Int) {
-        if (length == 10) {
-            btnSendOtp.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
-            btnSendOtp.setTextColor(ContextCompat.getColor(this, R.color.brand_green_dark))
-        } else {
-            // Default inactive-looking color (using current backgroundTint from XML as reference)
-            btnSendOtp.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#81C784"))
-            btnSendOtp.setTextColor(ContextCompat.getColor(this, R.color.brand_green_dark))
         }
     }
 }

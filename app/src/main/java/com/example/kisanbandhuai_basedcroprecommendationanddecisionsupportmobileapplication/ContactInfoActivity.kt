@@ -1,6 +1,8 @@
 package com.example.kisanbandhuai_basedcroprecommendationanddecisionsupportmobileapplication
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -25,6 +27,7 @@ class ContactInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contact_info)
 
+        // Initialize Views
         tvPrimaryMobile = findViewById(R.id.tv_primary_mobile)
         etAltMobile = findViewById(R.id.et_alt_mobile)
         etEmail = findViewById(R.id.et_email)
@@ -39,31 +42,39 @@ class ContactInfoActivity : AppCompatActivity() {
             saveContactInfo()
         }
 
-        loadContactInfo()
+        // Delay loading slightly to let the window gain focus and avoid ANR
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (!isFinishing) {
+                loadContactInfo()
+            }
+        }, 300)
     }
 
     private fun loadContactInfo() {
-        val uid = auth.currentUser?.uid ?: return
+        val user = auth.currentUser ?: return
         
-        // Use the phone number from Auth as the primary source of truth
-        val authPhone = auth.currentUser?.phoneNumber ?: "Not Available"
-        tvPrimaryMobile.text = authPhone
+        // Set Auth phone number immediately
+        tvPrimaryMobile.text = user.phoneNumber ?: "Not Available"
 
-        db.collection("users").document(uid).get()
+        db.collection("users").document(user.uid).get()
             .addOnSuccessListener { document ->
+                if (isFinishing) return@addOnSuccessListener
+                
                 if (document.exists()) {
-                    val profile = document.toObject(UserProfile::class.java)
-                    // We only overwrite if Firestore has a different stored number (rare), 
-                    // but usually Auth is the best source.
-                    // tvPrimaryMobile.text = profile?.mobileNumber ?: authPhone
-                    
-                    etAltMobile.setText(profile?.alternateMobile)
-                    etEmail.setText(profile?.email)
-                    etAddress.setText(profile?.address)
+                    try {
+                        val profile = document.toObject(UserProfile::class.java)
+                        etAltMobile.setText(profile?.alternateMobile ?: "")
+                        etEmail.setText(profile?.email ?: "")
+                        etAddress.setText(profile?.address ?: "")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Failed to load info", Toast.LENGTH_SHORT).show()
+                if (!isFinishing) {
+                    Toast.makeText(this, "Failed to load info", Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
@@ -82,13 +93,17 @@ class ContactInfoActivity : AppCompatActivity() {
         db.collection("users").document(uid)
             .update(updates)
             .addOnSuccessListener {
-                Toast.makeText(this, "Contact Info Saved!", Toast.LENGTH_SHORT).show()
-                finish()
+                if (!isFinishing) {
+                    Toast.makeText(this, "Contact Info Saved!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                btnSave.isEnabled = true
-                btnSave.text = "SAVE CONTACT INFO / सहेजें"
+                if (!isFinishing) {
+                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    btnSave.isEnabled = true
+                    btnSave.text = "SAVE CONTACT INFO / सहेजें"
+                }
             }
     }
 }

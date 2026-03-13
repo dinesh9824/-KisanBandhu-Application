@@ -248,7 +248,7 @@ class MarketAnalysisActivity : SwipeableActivity() {
 
     private fun populateGenericCard(view: View, info: MarketPriceInfo) {
         val record = info.record
-        view.findViewById<TextView>(R.id.tv_crop_name_generic).text = record.commodity
+        view.findViewById<TextView>(R.id.tv_crop_name_generic).text = translateCropName(record.commodity ?: "")
         view.findViewById<TextView>(R.id.tv_market_location_generic).text = "📍 ${record.market}, ${record.state}"
         view.findViewById<TextView>(R.id.tv_price_value_generic).text = "₹${record.modalPrice}"
         
@@ -296,7 +296,7 @@ class MarketAnalysisActivity : SwipeableActivity() {
             val info = cropPricesMap[cropKey]
             val itemView = inflater.inflate(R.layout.item_recommended_crop, recPricesContainer, false)
             
-            itemView.findViewById<TextView>(R.id.tv_crop_name).text = cropKey.replaceFirstChar { it.uppercase() }
+            itemView.findViewById<TextView>(R.id.tv_crop_name).text = translateCropName(cropKey)
             if (intentProbs != null && index < intentProbs.size) {
                 itemView.findViewById<TextView>(R.id.tv_soil_match_percent).text = "${intentProbs[index]}%"
             }
@@ -316,6 +316,15 @@ class MarketAnalysisActivity : SwipeableActivity() {
             }
             recPricesContainer.addView(itemView)
         }
+    }
+
+    private fun translateCropName(rawName: String): String {
+        val resourceId = resources.getIdentifier(
+            "crop_${rawName.lowercase().replace(" ", "")}", 
+            "string", 
+            packageName
+        )
+        return if (resourceId != 0) getString(resourceId) else rawName.replaceFirstChar { it.uppercase() }
     }
 
     private fun showCreateAlertDialog() {
@@ -374,11 +383,33 @@ class MarketAnalysisActivity : SwipeableActivity() {
         bottomNav.selectedItemId = R.id.nav_market
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> { startActivity(Intent(this, MainActivity::class.java)); true }
+                R.id.nav_home -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(intent)
+                    true
+                }
                 R.id.nav_market -> true
+                R.id.nav_weather -> {
+                    val intent = Intent(this, WeatherInfoActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_profile -> {
+                    val intent = Intent(this, ProfileActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(intent)
+                    true
+                }
                 else -> false
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        findViewById<BottomNavigationView>(R.id.bottom_navigation)?.selectedItemId = R.id.nav_market
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

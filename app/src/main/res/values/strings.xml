@@ -62,6 +62,25 @@
     <string name="offline_mode">(Offline Mode)</string>
     <string name="location_prefix">Location</string>
 
+    <!-- Market Analysis Strings -->
+    <string name="market_analysis_title">Market Price &amp; Analysis</string>
+    <string name="smart_rec_active">Smart Recommendation Active</string>
+    <string name="smart_rec_desc">Based on your soil data, we\'ve analyzed market prices and soil compatibility.</string>
+    <string name="detecting_location">Detecting location...</string>
+    <string name="filter">Filter</string>
+    <string name="search_crops_hint">Search crops or price...</string>
+    <string name="rising">Rising</string>
+    <string name="falling">Falling</string>
+    <string name="best_deal">Best Deal</string>
+    <string name="category_vegetables">🥦 Vegetables</string>
+    <string name="category_fruits">🍇 Fruits</string>
+    <string name="category_grains">🌾 Grains</string>
+    <string name="ai_rec_soil">AI Recommended for Your Soil</string>
+    <string name="set_price_alerts">Set Price Alerts</string>
+    <string name="set_price_alerts_desc">Get notified when prices reach your target</string>
+    <string name="create_alert">Create Alert</string>
+    <string name="market_disclaimer">📍 Note: Prices are indicative and may vary by region, quality grade, and market conditions. Always verify with your local mandi before making decisions.</string>
+
     <!-- Crop Recommendation Flow -->
     <string name="crop_rec_title">Crop Recommendation Input</string>
     <string name="select_data_source">Select Data Source</string>
@@ -132,6 +151,7 @@
     <string name="calculating">Calculating...</string>
     <string name="feeding_ai_model">Feeding data to AI model...</string>
     <string name="back_to_input">Back to Input</string>
+    <string name="check_market_price">Check Market Price</string>
 
     <!-- Crop Translation List -->
     <string name="crop_rice">Rice</string>

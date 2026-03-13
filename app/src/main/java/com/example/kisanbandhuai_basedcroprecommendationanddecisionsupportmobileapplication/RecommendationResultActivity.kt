@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.content.Intent
+import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 
@@ -32,13 +33,10 @@ class RecommendationResultActivity : BaseActivity() {
             finish()
         }
 
-        findViewById<MaterialButton>(R.id.btn_check_market).setOnClickListener {
-            val intent = Intent(this, MarketAnalysisActivity::class.java)
-            if (cropNames.isNotEmpty()) {
-                intent.putStringArrayListExtra("recommended_crops", cropNames)
-                intent.putStringArrayListExtra("recommended_probs", cropProbs)
-            }
-            startActivity(intent)
+        val btnCheckMarket = findViewById<MaterialButton>(R.id.btn_check_market)
+        btnCheckMarket.text = getString(R.string.check_market_price)
+        btnCheckMarket.setOnClickListener {
+            navigateToMarket()
         }
 
         val n = intent.getIntExtra("N", 0)
@@ -72,26 +70,48 @@ class RecommendationResultActivity : BaseActivity() {
                 cropProbs.clear()
                 
                 if (predictions.isNotEmpty()) {
+                    // Rank 1 - Primary (Green)
                     val p1 = predictions[0]
                     cropNames.add(p1.cropName)
                     cropProbs.add("${(p1.probability * 100).toInt()}")
-                    findViewById<TextView>(R.id.tv_crop_1)?.text = getLocalizedCropName(p1.cropName)
-                    findViewById<TextView>(R.id.tv_prob_1)?.text = "${(p1.probability * 100).toInt()}%"
+                    val tvCrop1 = findViewById<TextView>(R.id.tv_crop_1)
+                    tvCrop1?.text = getLocalizedCropName(p1.cropName)
+                    tvCrop1?.setTextColor(ContextCompat.getColor(this, R.color.brand_green_dark))
+                    
+                    val tvProb1 = findViewById<TextView>(R.id.tv_prob_1)
+                    tvProb1?.text = "${(p1.probability * 100).toInt()}%"
+                    tvProb1?.setTextColor(Color.WHITE) 
+                    
                     updateCropIcon(p1.cropName, findViewById(R.id.crop_icon_1))
                     
+                    // Rank 2 - Secondary (Orange)
                     if (predictions.size > 1) {
                         val p2 = predictions[1]
                         cropNames.add(p2.cropName)
                         cropProbs.add("${(p2.probability * 100).toInt()}")
-                        findViewById<TextView>(R.id.tv_crop_2)?.text = getLocalizedCropName(p2.cropName)
-                        findViewById<TextView>(R.id.tv_prob_2)?.text = "${(p2.probability * 100).toInt()}%"
+                        val tvCrop2 = findViewById<TextView>(R.id.tv_crop_2)
+                        tvCrop2?.text = getLocalizedCropName(p2.cropName)
+                        tvCrop2?.setTextColor(Color.parseColor("#E65100")) // Deep Orange
+                        
+                        val prob2 = (p2.probability * 100).toInt()
+                        val tvProb2 = findViewById<TextView>(R.id.tv_prob_2)
+                        tvProb2?.text = "$prob2%"
+                        tvProb2?.setTextColor(Color.parseColor("#FF9800")) // Orange
                     }
+                    
+                    // Rank 3 - Tertiary (Gray)
                     if (predictions.size > 2) {
                         val p3 = predictions[2]
                         cropNames.add(p3.cropName)
                         cropProbs.add("${(p3.probability * 100).toInt()}")
-                        findViewById<TextView>(R.id.tv_crop_3)?.text = getLocalizedCropName(p3.cropName)
-                        findViewById<TextView>(R.id.tv_prob_3)?.text = "${(p3.probability * 100).toInt()}%"
+                        val tvCrop3 = findViewById<TextView>(R.id.tv_crop_3)
+                        tvCrop3?.text = getLocalizedCropName(p3.cropName)
+                        tvCrop3?.setTextColor(Color.parseColor("#616161")) // Dark Gray
+                        
+                        val prob3 = (p3.probability * 100).toInt()
+                        val tvProb3 = findViewById<TextView>(R.id.tv_prob_3)
+                        tvProb3?.text = "$prob3%"
+                        tvProb3?.setTextColor(Color.parseColor("#9E9E9E")) // Gray
                     }
                 }
             }
@@ -137,11 +157,29 @@ class RecommendationResultActivity : BaseActivity() {
                     true
                 }
                 R.id.nav_market -> {
-                    startActivity(Intent(this, MarketAnalysisActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
+                    navigateToMarket()
+                    true
+                }
+                R.id.nav_weather -> {
+                    startActivity(Intent(this, WeatherInfoActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
+                    true
+                }
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT))
                     true
                 }
                 else -> false
             }
         }
+    }
+
+    private fun navigateToMarket() {
+        val intent = Intent(this, MarketAnalysisActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+        if (cropNames.isNotEmpty()) {
+            intent.putStringArrayListExtra("recommended_crops", cropNames)
+            intent.putStringArrayListExtra("recommended_probs", cropProbs)
+        }
+        startActivity(intent)
     }
 }

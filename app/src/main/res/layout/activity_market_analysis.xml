@@ -42,7 +42,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AI Crop Advisor"
+                android:text="@string/ai_crop_advisor"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -69,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Market Price &amp; Analysis"
+            android:text="@string/market_analysis_title"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -124,7 +124,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Smart Recommendation Active"
+                            android:text="@string/smart_rec_active"
                             android:textColor="#E65100"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -133,7 +133,7 @@
                             android:id="@+id/tv_smart_rec_desc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Based on your soil data, we've analyzed market prices and soil compatibility."
+                            android:text="@string/smart_rec_desc"
                             android:textColor="#5D4037"
                             android:textSize="11sp" />
                     </LinearLayout>
@@ -173,7 +173,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="Detecting location..."
+                            android:text="@string/detecting_location"
                             android:textColor="#1976D2"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -185,7 +185,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Filter"
+                    android:text="@string/filter"
                     android:textColor="@color/black"
                     app:cornerRadius="8dp"
                     app:icon="@drawable/ic_filter"
@@ -222,7 +222,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
-                        android:hint="Search crops or price..."
+                        android:hint="@string/search_crops_hint"
                         android:textSize="14sp" />
 
                     <ImageView
@@ -269,7 +269,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rising"
+                            android:text="@string/rising"
                             android:textColor="@color/text_secondary"
                             android:textSize="10sp" />
 
@@ -311,7 +311,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Falling"
+                            android:text="@string/falling"
                             android:textColor="@color/text_secondary"
                             android:textSize="10sp" />
 
@@ -353,7 +353,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Best Deal"
+                            android:text="@string/best_deal"
                             android:textColor="@color/text_secondary"
                             android:textSize="10sp" />
 
@@ -391,7 +391,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:backgroundTint="@color/white"
-                        android:text="🥦 Vegetables"
+                        android:text="@string/category_vegetables"
                         android:textColor="@color/black"
                         android:textSize="12sp"
                         app:cornerRadius="20dp" />
@@ -402,7 +402,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="🍇 Fruits"
+                        android:text="@string/category_fruits"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         app:cornerRadius="20dp" />
@@ -413,7 +413,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="🌾 Grains"
+                        android:text="@string/category_grains"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp"
                         app:cornerRadius="20dp" />
@@ -456,7 +456,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="AI Recommended for Your Soil"
+                            android:text="@string/ai_rec_soil"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -510,7 +510,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Set Price Alerts"
+                            android:text="@string/set_price_alerts"
                             android:textColor="#4A148C"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -518,7 +518,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Get notified when prices reach your target"
+                            android:text="@string/set_price_alerts_desc"
                             android:textColor="#7B1FA2"
                             android:textSize="12sp" />
 
@@ -528,7 +528,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:backgroundTint="#9C27B0"
-                            android:text="Create Alert"
+                            android:text="@string/create_alert"
                             android:textAllCaps="false"
                             app:cornerRadius="8dp" />
                     </LinearLayout>
@@ -550,7 +550,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="12dp"
-                    android:text="📍 Note: Prices are indicative and may vary by region, quality grade, and market conditions. Always verify with your local mandi before making decisions."
+                    android:text="@string/market_disclaimer"
                     android:textColor="#F57F17"
                     android:textSize="11sp" />
             </com.google.android.material.card.MaterialCardView>

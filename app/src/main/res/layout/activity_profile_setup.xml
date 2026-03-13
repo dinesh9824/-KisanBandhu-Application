@@ -147,9 +147,21 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center_vertical">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
                         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@android:drawable/ic_dialog_map" app:tint="@color/brand_green" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="Your Location / आपकी जगह" android:textColor="@color/black" android:textStyle="bold" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:layout_weight="1" android:text="Your Location / आपकी जगह" android:textColor="@color/black" android:textStyle="bold" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_get_location"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Get Current / अभी का स्थान"
+                            android:textAllCaps="false"
+                            android:textColor="@color/brand_green"
+                            android:textSize="12sp"
+                            app:icon="@android:drawable/ic_menu_mylocation"
+                            app:iconSize="14dp"
+                            app:iconTint="@color/brand_green" />
                     </LinearLayout>
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:orientation="vertical">
