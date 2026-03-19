@@ -1,3 +1,4 @@
+# Built artifacts
 *.iml
 .gradle
 /local.properties
@@ -12,4 +13,29 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Android Studio
+*.iml
+.idea/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/caches/
+.idea/libraries/
+
+# Gradle
+.gradle/
+build/
+
+# Local configuration files
 local.properties
+
+# Log files
+*.log
+
+# Sensitive Firebase configuration (Add instructions in README for users to add their own)
+**/google-services.json
+
+# Secrets properties (Used for API Keys)
+secrets.properties
