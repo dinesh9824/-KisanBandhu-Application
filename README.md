@@ -1,6 +1,7 @@
 # KisanBandhu: AI-Powered Crop Advisor & Market Intelligence
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.9.0-blue.svg)](https://kotlinlang.org/)
+[![Java](https://img.shields.io/badge/Java-ED8B00?logo=java&logoColor=white)](https://www.java.com/)
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](https://developer.android.com/)
 [![ONNX](https://img.shields.io/badge/AI-ONNX_Runtime-orange.svg)](https://onnxruntime.ai/)
 [![Firebase](https://img.shields.io/badge/Backend-Firebase-yellow.svg)](https://firebase.google.com/)
