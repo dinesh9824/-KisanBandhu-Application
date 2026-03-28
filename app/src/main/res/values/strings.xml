@@ -135,6 +135,7 @@
     
     <string name="save_values">SAVE VALUES</string>
     <string name="save_value">SAVE VALUE</string>
+    <string name="save">Save</string>
     <string name="enter_manually">Enter Manually</string>
 
     <string name="recommendation_ready">Recommendation Ready!</string>
