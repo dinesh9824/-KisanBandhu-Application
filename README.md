@@ -47,7 +47,7 @@
 
 | Weather Information | Crop Health Scanner |
 |:---:|:---:|
-| ![Weather](assets/screenshots/weather.png) | ![Crop Health](assets/screenshots/crophealh.png) |
+| ![Weather](assets/screenshots/weather.png) | ![Crop Health](assets/screenshots/crophealth.png) |
 ---
 
 ## ⚙️ Technology Stack
